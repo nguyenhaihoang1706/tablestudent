@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function TableHeader(props) {
-  const [column, handleSorting] = props;
+  const { columns, handleSorting } = props;
   const [sortField, setSortField] = useState("");
   const [order, setOrder] = useState("asc");
   const handleSortingChange = (accessor) => {
@@ -12,21 +12,20 @@ function TableHeader(props) {
     handleSorting(accessor, sortOrder);
   };
 
-  useEffect(() => {
-    console.log(props);
-  }, []);
   return (
     <tr>
-      {column.map((col, index) => {
+      {columns.map((column, index) => {
         return (
           <th
-            style={{ width: col.width }}
+            style={{ width: column.width }}
             key={index}
             onClick={
-              col.sortable ? () => handleSortingChange(col.dataIndex) : null
+              column.sortable
+                ? () => handleSortingChange(column.dataIndex)
+                : null
             }
           >
-            {col.title}
+            {column.title}
           </th>
         );
       })}

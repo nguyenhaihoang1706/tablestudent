@@ -1,16 +1,18 @@
 import TableCell from "../TableCell";
 
 function TableRow(props) {
-  const { column, data } = props;
+  const { columns, data, handleUpdate } = props;
+
   return (
     <>
       {data.map((row, rowIndex) => (
         <tr key={rowIndex}>
-          {column.map((col, colIndex) => (
+          {columns.map((column, colIndex) => (
             <TableCell
+              key={colIndex}
               rowIndex={rowIndex}
               colIndex={colIndex}
-              col={col}
+              column={column}
               row={row}
             />
           ))}

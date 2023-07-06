@@ -1,20 +1,16 @@
 import TableRow from "./subComponents/TableRow";
 import TableHeader from "./subComponents/TableHeader";
 import "./style.css";
-import { useEffect } from "react";
 
 function Table(props) {
-  const { column, data, handleSorting } = props;
-  useEffect(() => {
-    console.log(props);
-  }, []);
+  const { columns, data, handleSorting, handleUpdate } = props;
   return (
     <table>
       <thead>
-        <TableHeader column={column} handleSorting={handleSorting} />
+        <TableHeader columns={columns} handleSorting={handleSorting} />
       </thead>
       <tbody>
-        <TableRow column={column} data={data} />
+        <TableRow columns={columns} data={data} handleUpdate={handleUpdate} />
       </tbody>
     </table>
   );

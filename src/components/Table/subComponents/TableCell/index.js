@@ -1,9 +1,9 @@
 function TableCell(props) {
-  const { col, row, colIndex, rowIndex } = props;
-  const value = col.dataIndex ? row[col.dataIndex] : null;
+  const { column, row, colIndex, rowIndex } = props;
+  const value = column.dataIndex ? row[column.dataIndex] : null;
   return (
-    <td key={colIndex} style={{ width: col.width }}>
-      {col.render ? col.render(row, value, rowIndex) : value}
+    <td key={colIndex} style={{ width: column.width }}>
+      {column.render ? column.render(row, value, rowIndex) : value}
     </td>
   );
 }

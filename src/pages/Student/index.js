@@ -1,7 +1,12 @@
 import AddStudent from "./SubComponent/AddStudent";
+import UpdateStudent from "./SubComponent/UpdateStudent";
 import { useState, useEffect } from "react";
 import Table from "../../components/Table";
 import { Button } from "react-bootstrap";
+import { v4 as uuidv4 } from "uuid";
+
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const defaultData = [
   {
@@ -34,10 +39,10 @@ const defaultData = [
   },
 ];
 
-function Student(props) {
+function Student() {
   const [students, setStudent] = useState(defaultData);
 
-  const column = [
+  const columns = [
     {
       title: "STT",
       width: 50,
@@ -96,16 +101,21 @@ function Student(props) {
       sortable: false,
       render: (row, _) => {
         return [
-          <Button variant="danger">Xoá</Button>,
+          <Button style={{ marginRight: 10 }} variant="danger">
+            Xoá
+          </Button>,
           <></>,
-          <Button variant="warning">Sửa</Button>,
+          <UpdateStudent onClick={() => handleUpdate()}>Sửa</UpdateStudent>,
         ];
       },
     },
   ];
-
+  const handleUpdate = (student) => {
+    console.log(student);
+  };
   const handleAddStudent = (student) => {
-    setStudent([...students, student]);
+    const newStudent = { ...student, id: uuidv4() };
+    setStudent([...students, newStudent]);
   };
 
   const handleSorting = (sortField, sortOrder) => {
@@ -115,7 +125,7 @@ function Student(props) {
         if (b[sortField] === null) return -1;
         if (a[sortField] === null && b[sortField] === null) return 0;
         return (
-          a[sortField].toString().localCompare(b[sortField].toString(), "vi", {
+          a[sortField].toString().localeCompare(b[sortField].toString(), "vi", {
             numeric: true,
           }) * (sortOrder === "asc" ? 1 : -1)
         );
@@ -124,26 +134,25 @@ function Student(props) {
     }
   };
 
-  useEffect(() => {
-    console.log(students);
-  }, []);
   return (
     <div className="container" style={{ paddingTop: 20 }}>
       <h2>Quản lý học sinh</h2>
       <AddStudent onAdd={handleAddStudent} />
-      <Button
-        variant="primary"
-        style={{
-          textAlign: "right",
-          float: "right",
-          marginBottom: 30,
-          marginRight: 5,
-        }}
-      >
-        Sắp xếp
-      </Button>
       <br />
-      <Table column={column} data={students} handleSorting={handleSorting} />
+      <Table columns={columns} data={students} handleSorting={handleSorting} />
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }

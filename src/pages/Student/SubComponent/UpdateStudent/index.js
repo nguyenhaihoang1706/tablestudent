@@ -1,47 +1,34 @@
-import { useState } from "react";
-import "bootstrap/dist/css/bootstrap.css";
-import { v4 as uuidv4 } from "uuid";
 import { Button, Form, Modal, Row, Col } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.css";
 
-import { toast } from "react-toastify";
-function AddStudent(props) {
-  const { onAdd } = props;
-  const [show, setShow] = useState(false);
+import { useState } from "react";
+function UpdateStudent(props) {
+  const [showEdit, setShowEdit] = useState(false);
   const [student, setStudent] = useState(null);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => setShowEdit(false);
+  const handleShow = () => setShowEdit(false);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setStudent({
       ...student,
       [name]: value,
-      id: uuidv4,
     });
   };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    onAdd(student);
-    setStudent(null);
-    handleClose();
-    toast.success("Success");
-  };
-
   return (
     <>
       <Button
-        variant="success"
+        variant="warning"
         onClick={handleShow}
-        style={{ textAlign: "right", float: "right", marginBottom: "30px" }}
+        style={{ textAlign: "right" }}
       >
-        Thêm học sinh mới
+        Sửa
       </Button>
-      <Form onSubmit={handleSubmit}>
-        <Modal show={show} size="lg" onHide={handleClose}>
+      <Form>
+        <Modal show={showEdit} size="lg" onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Thêm học sinh mới</Modal.Title>
+            <Modal.Title>Update học sinh mới</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Row className="mb-3">
@@ -100,8 +87,8 @@ function AddStudent(props) {
             <Button variant="secondary" onClick={handleClose}>
               Huỷ
             </Button>
-            <Button variant="primary" type="submit" onClick={handleSubmit}>
-              Thêm
+            <Button variant="warning" type="submit">
+              Sửa
             </Button>
           </Modal.Footer>
         </Modal>
@@ -110,4 +97,4 @@ function AddStudent(props) {
   );
 }
 
-export default AddStudent;
+export default UpdateStudent;
