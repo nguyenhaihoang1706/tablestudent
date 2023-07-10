@@ -1,21 +1,33 @@
 import { Button, Form, Modal, Row, Col } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
 
-import { useState } from "react";
-function UpdateStudent(props) {
-  const [showEdit, setShowEdit] = useState(false);
-  const [student, setStudent] = useState(null);
+import { useEffect, useState } from "react";
 
-  const handleClose = () => setShowEdit(false);
-  const handleShow = () => setShowEdit(false);
+import { toast } from "react-toastify";
+function UpdateStudent(props) {
+  const { onUpdate, row } = props;
+  const [show, setShow] = useState(false);
+  const [student, setStudent] = useState(row);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setStudent({
       ...student,
-      [name]: value,
+      [name]: name === "sex" ? parseInt(value) : value,
     });
   };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onUpdate(student);
+    handleClose();
+    toast.warning("Warning");
+  };
+
+  useEffect(() => {}, [row]);
   return (
     <>
       <Button
@@ -25,8 +37,8 @@ function UpdateStudent(props) {
       >
         Sửa
       </Button>
-      <Form>
-        <Modal show={showEdit} size="lg" onHide={handleClose}>
+      <Form onSubmit={handleSubmit}>
+        <Modal show={show} size="lg" onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Update học sinh mới</Modal.Title>
           </Modal.Header>
@@ -35,6 +47,7 @@ function UpdateStudent(props) {
               <Form.Group as={Col} controlId="form.fullName">
                 <Form.Label>Họ và tên</Form.Label>
                 <Form.Control
+                  defaultValue={student && student.fullName}
                   type="text"
                   onChange={handleInputChange}
                   placeholder="Nhập họ và tên"
@@ -45,6 +58,7 @@ function UpdateStudent(props) {
               <Form.Group as={Col} controlId="form.id">
                 <Form.Label>Mã học sinh</Form.Label>
                 <Form.Control
+                  defaultValue={student && student.id}
                   type="text"
                   onChange={handleInputChange}
                   placeholder="Nhập mã học sinh"
@@ -57,6 +71,7 @@ function UpdateStudent(props) {
               <Form.Group as={Col} controlId="form.age">
                 <Form.Label>Tuổi</Form.Label>
                 <Form.Control
+                  defaultValue={student && student.age}
                   type="number"
                   onChange={handleInputChange}
                   placeholder="Nhập tuổi"
@@ -66,15 +81,21 @@ function UpdateStudent(props) {
               </Form.Group>
               <Form.Group as={Col} controlId="form.sex">
                 <Form.Label>Giới tính</Form.Label>
-                <Form.Select aria-label="Chọn giới tính" required name="sex">
-                  <option value="1">Nữ</option>
-                  <option value="0">Nam</option>
+                <Form.Select
+                  defaultValue={student && student.sex}
+                  aria-label="Chọn giới tính"
+                  required
+                  name="sex"
+                >
+                  <option value={1}>Nữ</option>
+                  <option value={0}>Nam</option>
                 </Form.Select>
               </Form.Group>
             </Row>
             <Form.Group className="mb-3" controlId="form.address">
               <Form.Label>Địa chỉ</Form.Label>
               <Form.Control
+                value={student && student.address}
                 type="text"
                 placeholder="Nhập địa chỉ"
                 onChange={handleInputChange}
@@ -87,7 +108,7 @@ function UpdateStudent(props) {
             <Button variant="secondary" onClick={handleClose}>
               Huỷ
             </Button>
-            <Button variant="warning" type="submit">
+            <Button variant="warning" onClick={handleSubmit}>
               Sửa
             </Button>
           </Modal.Footer>

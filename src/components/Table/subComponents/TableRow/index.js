@@ -1,7 +1,7 @@
 import TableCell from "../TableCell";
 
 function TableRow(props) {
-  const { columns, data, handleUpdate } = props;
+  const { columns, data } = props;
 
   return (
     <>

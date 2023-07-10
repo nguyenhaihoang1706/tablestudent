@@ -1,14 +1,77 @@
 import AddStudent from "./SubComponent/AddStudent";
 import UpdateStudent from "./SubComponent/UpdateStudent";
-import { useState, useEffect } from "react";
+import DeleteStudent from "./SubComponent/DeleteStudent";
+import { useState, useContext, useEffect } from "react";
+
 import Table from "../../components/Table";
-import { Button } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import ThemeContext from "../../context/theme";
+
+import { Row, Form } from "react-bootstrap";
+
+import "./style.css";
+
 const defaultData = [
+  {
+    id: "std1",
+    fullName: "Nguyen Van A",
+    address: "Hai Thuong Lang Ong",
+    age: 20,
+    sex: 1,
+  },
+  {
+    id: "std2",
+    fullName: "Nguyen Van B",
+    age: 18,
+    address: "Hai Thuong Lang Ong",
+    sex: 0,
+  },
+  {
+    id: "std3",
+    fullName: "Nguyen Van C",
+    age: 18,
+    address: "Hai Thuong Lang Ong",
+    sex: 1,
+  },
+  {
+    id: "std4",
+    fullName: "Nguyen Van D",
+    age: 17,
+    address: "Hai Thuong Lang Ong",
+    sex: 1,
+  },
+  {
+    id: "std1",
+    fullName: "Nguyen Van A",
+    address: "Hai Thuong Lang Ong",
+    age: 20,
+    sex: 1,
+  },
+  {
+    id: "std2",
+    fullName: "Nguyen Van B",
+    age: 18,
+    address: "Hai Thuong Lang Ong",
+    sex: 0,
+  },
+  {
+    id: "std3",
+    fullName: "Nguyen Van C",
+    age: 18,
+    address: "Hai Thuong Lang Ong",
+    sex: 1,
+  },
+  {
+    id: "std4",
+    fullName: "Nguyen Van D",
+    age: 17,
+    address: "Hai Thuong Lang Ong",
+    sex: 1,
+  },
   {
     id: "std1",
     fullName: "Nguyen Van A",
@@ -41,6 +104,10 @@ const defaultData = [
 
 function Student() {
   const [students, setStudent] = useState(defaultData);
+
+  const themeCtx = useContext(ThemeContext);
+
+  const [isScroll, setIsScroll] = useState(false);
 
   const columns = [
     {
@@ -101,18 +168,25 @@ function Student() {
       sortable: false,
       render: (row, _) => {
         return [
-          <Button style={{ marginRight: 10 }} variant="danger">
-            Xoá
-          </Button>,
+          <DeleteStudent onDelete={handleDeleteStudent} row={row} />,
           <></>,
-          <UpdateStudent onClick={() => handleUpdate()}>Sửa</UpdateStudent>,
+          <UpdateStudent onUpdate={handleUpdateStudent} row={row} />,
         ];
       },
     },
   ];
-  const handleUpdate = (student) => {
-    console.log(student);
+  const handleDeleteStudent = (id) => {
+    const deteleStudent = [...students].filter((std) => std.id !== id);
+    setStudent(deteleStudent);
   };
+
+  const handleUpdateStudent = (student) => {
+    const updateStudent = [...students].map((std) =>
+      std.id === student.id ? student : std
+    );
+    setStudent(updateStudent);
+  };
+
   const handleAddStudent = (student) => {
     const newStudent = { ...student, id: uuidv4() };
     setStudent([...students, newStudent]);
@@ -134,13 +208,50 @@ function Student() {
     }
   };
 
+  const handleThemeChange = (event) => {
+    themeCtx.setTheme(event.target.value);
+  };
+
+  const handleBackToTop = () => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  };
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (window.scrollY > window.screenY) {
+        setIsScroll(true);
+      } else {
+        setIsScroll(false);
+      }
+    };
+    window.addEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <div className="container" style={{ paddingTop: 20 }}>
+    <div
+      className={`container-fluid ${themeCtx.theme === "dark" && "dark"}`}
+      style={{ paddingTop: 20 }}
+    >
       <h2>Quản lý học sinh</h2>
       <AddStudent onAdd={handleAddStudent} />
-      <br />
+      <Row style={{ marginBottom: 10, float: "left" }}>
+        <Form.Group controlId="form.theme">
+          <Form.Select
+            defaultValue={themeCtx.theme}
+            aria-label="Chọn theme"
+            onChange={handleThemeChange}
+            required
+          >
+            <option value={"dark"}>Dark Mode</option>
+            <option value={"light"}>Light Mode</option>
+          </Form.Select>
+        </Form.Group>
+      </Row>
       <Table columns={columns} data={students} handleSorting={handleSorting} />
-
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -153,6 +264,11 @@ function Student() {
         pauseOnHover
         theme="light"
       />
+      {isScroll && (
+        <button className="backToTopBtn" onClick={handleBackToTop}>
+          &#8593;
+        </button>
+      )}
     </div>
   );
 }
