@@ -24,7 +24,7 @@ function UpdateStudent(props) {
     event.preventDefault();
     onUpdate(student);
     handleClose();
-    toast.warning("Warning");
+    toast.warning("Update");
   };
 
   useEffect(() => {}, [row]);
